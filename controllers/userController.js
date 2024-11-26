@@ -1,10 +1,11 @@
 const userModel = require("./../models/User")
 const { model: banUserModel } = require("./../models/BanUser")
 const bcrypt = require("bcrypt")
-const userRegisterValid = require("./../validators/userRegisterValid")
-const banUserValid = require('./../validators/banUserValid')
 const jwt = require("jsonwebtoken")
 const { isValidObjectId } = require("mongoose")
+const userRegisterValid = require("../validators/user/userRegisterValid")
+const banUserValid = require('../validators/user/banUserValid')
+const loginUserValid = require("./../validators/user/loginUserValid")
 
 
 
@@ -64,7 +65,42 @@ const register = async (req, res) => {
 }
 
 const login = async (req, res) => {
+    try {
+        // check data by fastest
+        const isValidDataLogin = loginUserValid(req.body)
+        if (isValidDataLogin !== true) {
+            return res.status(409).json(isValidDataLogin)
+        }
 
+        //    get data from body
+        const { identifier, password } = req.body
+
+        // find user by phone
+        const userFind = await userModel.findOne({ $or: [{ phone: identifier }, { email: identifier }] })
+        if (!userFind) {
+            return res.status(401).json({ message: "user not found by phone or email .." })
+        }
+
+        // check password
+
+        const isCorrectPass = await bcrypt.compare(password, userFind.password)
+        if (!isCorrectPass) {
+            return res.status(401).json({ message: "password  not correct .." })
+        }
+
+        // set data  to send client
+
+        const userFindObject = userFind.toObject()
+        Reflect.deleteProperty(userFindObject, "__v")
+        Reflect.deleteProperty(userFindObject, "password")
+
+        // create token
+        const token = jwt.sign({ email: userFind.email, phone: userFind.phone }, process.env.JWT_SECRET, { expiresIn: 15 * 60 * 1000 })
+        return res.status(200).json({ user: userFindObject, token })
+
+    } catch (error) {
+        console.log(error);
+    }
 }
 const getMe = async (req, res) => {
 
@@ -120,4 +156,4 @@ const banUser = async (req, res) => {
 }
 
 
-module.exports = { register, banUser }
+module.exports = { register, banUser, login }
