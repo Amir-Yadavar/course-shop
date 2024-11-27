@@ -19,7 +19,7 @@ const register = async (req, res) => {
         }
 
         // get all body
-        const { firstName, lastName, email, phone, password } = req.body
+        const { firstName, lastName, email, phone, password, confirmPassword } = req.body
 
 
         // is user exist
@@ -48,7 +48,8 @@ const register = async (req, res) => {
             lastName,
             email,
             phone,
-            password: hashedPassword
+            password: hashedPassword,
+            confirmPassword
         })
 
         const userObj = newUser.toObject()
