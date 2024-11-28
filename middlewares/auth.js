@@ -3,14 +3,14 @@ const jwt = require("jsonwebtoken")
 
 const hasToken = async (req, res, next) => {
     // get header for check has token
-    const authHeader = req.header("Authorization").split(" ")
+    const authHeader = req.header("Authorization")?.split(" ")
 
-    if (authHeader.length !== 2) {
+    if (authHeader?.length !== 2) {
         res.status(403).json({ message: "unAuthorization .." })
     }
 
     // get token
-    const token = authHeader[1]
+    const token = authHeader && authHeader[1]
     try {
         // get payload from token
         const jwtPayload = jwt.verify(token, process.env.JWT_SECRET)

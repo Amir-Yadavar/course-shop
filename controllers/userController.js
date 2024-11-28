@@ -1,12 +1,10 @@
 const userModel = require("./../models/User")
-const { model: banUserModel } = require("./../models/BanUser")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const { isValidObjectId } = require("mongoose")
 const userRegisterValid = require("../validators/user/userRegisterValid")
-const banUserValid = require('../validators/user/banUserValid')
 const loginUserValid = require("./../validators/user/loginUserValid")
-
+const editUserValid = require("./../validators/user/editUserValid")
 
 
 const register = async (req, res) => {
@@ -103,6 +101,56 @@ const login = async (req, res) => {
         console.log(error);
     }
 }
+
+const getAll = async (req, res) => {
+    const allUser = await userModel.find({}, "-password -__v -createdAt -updatedAt")
+    return res.json(allUser)
+}
+
+const deleteUser = async (req, res) => {
+
+    // get id from params and check valid
+    const { id } = req.params
+    if (!isValidObjectId(id)) {
+        return res.status(404).json({ message: "the is is not valid .." })
+    }
+
+    // find user and check role
+    const findUser = await userModel.findOne({ _id: id }).lean()
+    if (!findUser) {
+        return res.status(404).json({ message: "user by id not find .." })
+    }
+    if (findUser.role === "ADMIN") {
+        return res.status(409).json({ message: "user by role admin can not delete .." })
+    }
+
+    // delete user
+    await userModel.deleteOne({ _id: id })
+    res.status(200).json({ message: "delete user successfully .." })
+}
+
+const editUser = async (req, res) => {
+    // get id from params and check
+
+    const { id } = req.params
+
+    if (!isValidObjectId(id)) {
+        return res.status(409).json({ message: "the id is not valid .." })
+    }
+
+    // get body and check
+    const resultValidData = editUserValid(req.body)
+    if (resultValidData !== true) {
+        return res.status(422).json(resultValidData)
+    }
+
+    const { firstName, lastName, email, phone } = req.body
+
+    // find user and update
+
+    await userModel.findOneAndUpdate({ _id: id }, { $set: { firstName, lastName, email, phone } })
+    res.status(201).json({ message: "user edit successfully .." })
+}
 const getMe = async (req, res) => {
 
 }
@@ -110,6 +158,12 @@ const getMe = async (req, res) => {
 const banUser = async (req, res) => {
     try {
 
+        // get body
+
+        const { isBan } = req.body
+        if (isBan !== true && isBan !== false) {
+            return res.status(409).json({ message: "the value isBan must true or false .." })
+        }
         // get params
         const { id } = req.params
         if (!isValidObjectId(id)) {
@@ -118,35 +172,15 @@ const banUser = async (req, res) => {
 
 
         // get  user
-        const userFind = await userModel.findOne({ _id: id })
+        const userFind = await userModel.findOneAndUpdate({ _id: id }, { $set: { isBan } })
 
         if (!userFind) {
             return res.status(404).json({ message: "the user is not exist .." })
         }
 
-        const dataSend = {
-            firstName: userFind.firstName,
-            lastName: userFind.lastName,
-            phone: userFind.phone
-        }
 
-        // is valid data by  fastest
-        const isValidData = banUserValid(dataSend)
-        if (isValidData !== true) {
-            return res.status(422).json(isValidData)
-        }
 
-        // get all ban user
-        const getAllBanUser = await banUserModel.find({ phone: userFind.phone })
-
-        if (getAllBanUser.length > 0) {
-            return res.status(409).json({ message: "the user already is ban .." })
-        }
-
-        // ban user
-        const banUserAdd = await banUserModel.create(dataSend)
-
-        res.status(201).json({ message: "the user ban successfully", user: banUserAdd })
+        res.status(201).json({ message: "the user edit status ban successfully" })
 
     } catch (error) {
         console.log(error);
@@ -157,4 +191,4 @@ const banUser = async (req, res) => {
 }
 
 
-module.exports = { register, banUser, login }
+module.exports = { register, banUser, login, getAll, deleteUser, editUser }
