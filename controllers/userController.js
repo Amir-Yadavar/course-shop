@@ -151,6 +151,23 @@ const editUser = async (req, res) => {
     await userModel.findOneAndUpdate({ _id: id }, { $set: { firstName, lastName, email, phone } })
     res.status(201).json({ message: "user edit successfully .." })
 }
+
+const changeRole = async (req, res) => {
+    // get body and check
+    const { id, role } = req.body
+
+    if (!isValidObjectId(id)) {
+        return res.status(409).json({ message: "the id is not valid .." })
+    }
+    if (role !== "ADMIN" && role !== "USER") {
+        return res.status(409).json({ message: "the value role must ADMIN or USER .." })
+    }
+
+    // find user and update role
+
+    await userModel.findOneAndUpdate({ _id: id }, { $set: { role: role === "ADMIN" ? "ADMIN" : "USER" } })
+    res.status(200).json({ message: "role change successfully .." })
+}
 const getMe = async (req, res) => {
 
 }
@@ -191,4 +208,4 @@ const banUser = async (req, res) => {
 }
 
 
-module.exports = { register, banUser, login, getAll, deleteUser, editUser }
+module.exports = { register, banUser, login, getAll, deleteUser, editUser, changeRole }
