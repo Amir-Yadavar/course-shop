@@ -1,5 +1,6 @@
 const express = require("express")
 const userRoute = require("./routes/userRoute")
+const categoryRoute = require("./routes/categoryRoute")
 const cors = require("cors")
 const path = require("path")
 
@@ -21,5 +22,7 @@ app.use("/courses/covers", express.static(path.join(__dirname, "public", "course
 
 // user route
 app.use("/api/auth/user", userRoute)
+// category route
+app.use("/api/category", categoryRoute)
 
 module.exports = app 
