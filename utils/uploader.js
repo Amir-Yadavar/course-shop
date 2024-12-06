@@ -6,7 +6,7 @@ module.exports = multer.diskStorage({
         cb(null, path.join(__dirname, "..", "public", "courses", "covers"))
     },
     filename: (req, file, cb) => {
-        const fileName = Date.now() + toString(Math.random() * 2222)
+        const fileName = Date.now() + `${Math.random() * 2222}`
         const ext = path.extname(file.originalname)
         cb(null, fileName + ext)
     }
