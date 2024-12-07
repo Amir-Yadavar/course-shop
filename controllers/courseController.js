@@ -43,5 +43,12 @@ const create = async (req, res) => {
 
 }
 
+const getAll = async (req, res) => {
+    const allCourse = await courseModel.find({}, "-__v -createdAt -updatedAt")
+        .populate("teacher", "name _id skills")
+        .populate("categoryID", "-__v -createdAt -updatedAt")
+    return res.json(allCourse)
+}
 
-module.exports = { create }
+
+module.exports = { create, getAll }

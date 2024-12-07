@@ -8,6 +8,6 @@ const uploader = require("./../utils/uploader")
 const router = express.Router()
 
 router.route("/")
-    .post(hasToken, isAdmin,multer({storage:uploader}).single("cover"), courseController.create)
-
-    module.exports = router
+    .post(hasToken, isAdmin, multer({ storage: uploader }).single("cover"), courseController.create)
+    .get(hasToken, courseController.getAll)
+module.exports = router
