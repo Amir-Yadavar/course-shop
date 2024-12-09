@@ -10,4 +10,7 @@ const router = express.Router()
 router.route("/")
     .post(hasToken, isAdmin, multer({ storage: uploader }).single("cover"), courseController.create)
     .get(hasToken, courseController.getAll)
+
+router.route("/:id/session")
+    .post(hasToken, isAdmin, courseController.addSession)
 module.exports = router

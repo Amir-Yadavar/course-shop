@@ -1,5 +1,8 @@
-const validator = require("./../validators/course/courseCreateValid")
 const { model: courseModel } = require("./../models/Course")
+const { model: sessionModel } = require("./../models/Session")
+const { isValidObjectId } = require("mongoose")
+const validator = require("./../validators/course/courseCreateValid")
+const validatorSession = require("./../validators/course/courseSessionValid")
 
 const create = async (req, res) => {
     // check data by fastest
@@ -50,5 +53,25 @@ const getAll = async (req, res) => {
     return res.json(allCourse)
 }
 
+const addSession = async (req, res) => {
+    // is valid objectId course
+    const { id } = req.params
+    if (!isValidObjectId(id)) {
+        return res.status(409).json({ message: "the course id is not valid .." })
+    }
 
-module.exports = { create, getAll }
+    // is valid body 
+    const resultCheck = validatorSession(req.body)
+    if (resultCheck !== true) {
+        return res.status(409).json(resultCheck)
+    }
+
+    // get body
+    const { title, isFree, time } = req.body
+
+    await sessionModel.create({ title, isFree, time, video: "test.mp4", course: id })
+    return res.status(201).json({ message: "session create successfully .." })
+}
+
+
+module.exports = { create, getAll, addSession }
