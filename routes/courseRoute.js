@@ -13,4 +13,7 @@ router.route("/")
 
 router.route("/:id/session")
     .post(hasToken, isAdmin, courseController.addSession)
+
+router.route("/sessions")
+    .get(hasToken, isAdmin, courseController.getAllSessions)
 module.exports = router

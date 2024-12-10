@@ -73,5 +73,13 @@ const addSession = async (req, res) => {
     return res.status(201).json({ message: "session create successfully .." })
 }
 
+const getAllSessions = async (req, res) => {
 
-module.exports = { create, getAll, addSession }
+    const sessions = await sessionModel.find({},"-__v").populate("course","title")
+
+    return res.json(sessions)
+
+}
+
+
+module.exports = { create, getAll, addSession, getAllSessions }
