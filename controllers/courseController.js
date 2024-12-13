@@ -5,44 +5,50 @@ const validator = require("./../validators/course/courseCreateValid")
 const validatorSession = require("./../validators/course/courseSessionValid")
 
 const create = async (req, res) => {
-    // check data by fastest
 
-    const result = validator(req.body)
+    try {
 
-    if (result !== true) {
-        return res.status(409).json(result)
+        // check data by fastest
+
+        const result = validator(req.body)
+
+        if (result !== true) {
+            return res.status(409).json(result)
+        }
+
+        const {
+            title,
+            description,
+            support,
+            href,
+            price,
+            discount,
+            score,
+            lastUpdate,
+            categoryID,
+            teacher,
+            statusProgress
+        } = req.body
+
+        await courseModel.create({
+            title,
+            description,
+            support,
+            href,
+            price,
+            discount,
+            score,
+            lastUpdate,
+            categoryID,
+            teacher,
+            statusProgress,
+            cover: req.file.filename
+        })
+
+        return res.status(201).json({ message: "course create successfully .." })
+    } catch (error) {
+        console.log(error);
     }
-
-    const {
-        title,
-        description,
-        support,
-        href,
-        price,
-        discount,
-        score,
-        lastUpdate,
-        categoryID,
-        teacher,
-        statusProgress
-    } = req.body
-
-    await courseModel.create({
-        title,
-        description,
-        support,
-        href,
-        price,
-        discount,
-        score,
-        lastUpdate,
-        categoryID,
-        teacher,
-        statusProgress,
-        cover: req.file.filename
-    })
-
-    return res.status(201).json({ message: "course create successfully .." })
 
 }
 
@@ -51,6 +57,63 @@ const getAll = async (req, res) => {
         .populate("teacher", "name _id skills")
         .populate("categoryID", "-__v -createdAt -updatedAt")
     return res.json(allCourse)
+}
+
+const editCourse = async (req, res) => {
+    try {
+
+        const { id } = req.params
+        if (id) {
+            if (!isValidObjectId(id)) {
+                return res.status(409).json({ message: "the id is not valid .." })
+            }
+            console.log(id);
+        }
+
+        // check data by fastest
+
+        // const result = validator(req.body)
+
+        // if (result !== true) {
+        //     return res.status(409).json(result)
+        // }
+
+        const {
+            title,
+            description,
+            support,
+            href,
+            price,
+            discount,
+            score,
+            lastUpdate,
+            categoryID,
+            teacher,
+            statusProgress
+        } = req.body
+
+        await courseModel.findOneAndUpdate({ _id: id }, {
+            $set: {
+                title,
+                description,
+                support,
+                href,
+                price,
+                discount,
+                score,
+                lastUpdate,
+                categoryID,
+                teacher,
+                statusProgress,
+                cover: req.file.filename
+            }
+        })
+
+        return res.status(201).json({ message: "course update successfully .." })
+
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 const addSession = async (req, res) => {
@@ -75,11 +138,11 @@ const addSession = async (req, res) => {
 
 const getAllSessions = async (req, res) => {
 
-    const sessions = await sessionModel.find({},"-__v").populate("course","title")
+    const sessions = await sessionModel.find({}, "-__v").populate("course", "title")
 
     return res.json(sessions)
 
 }
 
 
-module.exports = { create, getAll, addSession, getAllSessions }
+module.exports = { create, getAll, editCourse, addSession, getAllSessions }
