@@ -156,5 +156,28 @@ const getAllSessions = async (req, res) => {
 
 }
 
+const removeSession = async (req, res) => {
+    try {
+        // check id 
+        const { id } = req.params
 
-module.exports = { create, getAll, editCourse, addSession, getAllSessions }
+        if (!isValidObjectId(id)) {
+            return res.status(409).json({ message: "id is not valid .." })
+        }
+
+
+        // remove session
+        const removeSession = await sessionModel.findOneAndDelete({ _id: id })
+        if (!removeSession) {
+            return res.status(404).json({ message: "session not found" })
+        }
+
+        return res.json(removeSession)
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+module.exports = { create, getAll, editCourse, addSession, getAllSessions, removeSession }
