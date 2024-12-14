@@ -3,6 +3,8 @@ const { model: sessionModel } = require("./../models/Session")
 const { isValidObjectId } = require("mongoose")
 const validator = require("./../validators/course/courseCreateValid")
 const validatorSession = require("./../validators/course/courseSessionValid")
+const fs = require("fs")
+const path = require("path")
 
 const create = async (req, res) => {
 
@@ -62,21 +64,20 @@ const getAll = async (req, res) => {
 const editCourse = async (req, res) => {
     try {
 
+        // check id
         const { id } = req.params
         if (id) {
             if (!isValidObjectId(id)) {
                 return res.status(409).json({ message: "the id is not valid .." })
             }
-            console.log(id);
         }
 
         // check data by fastest
+        const result = validator(req.body)
 
-        // const result = validator(req.body)
-
-        // if (result !== true) {
-        //     return res.status(409).json(result)
-        // }
+        if (result !== true) {
+            return res.status(409).json(result)
+        }
 
         const {
             title,
@@ -92,6 +93,17 @@ const editCourse = async (req, res) => {
             statusProgress
         } = req.body
 
+        // find course and delete last cover
+        const findCourse = await courseModel.findOne({ _id: id })
+
+        if (findCourse.cover !== req.file.filename && req.file) {
+            await fs.rm(`${path.join(__dirname, "..", "public", "courses", "covers")}/${findCourse.cover}`, (err, data) => {
+                console.log(err);
+            })
+        }
+
+
+        // edit course
         await courseModel.findOneAndUpdate({ _id: id }, {
             $set: {
                 title,
