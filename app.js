@@ -5,6 +5,7 @@ const userRoute = require("./routes/userRoute")
 const categoryRoute = require("./routes/categoryRoute")
 const teacherRoute = require("./routes/teacherRoute")
 const courseRoute = require("./routes/courseRoute")
+const commentRoute = require("./routes/commentRoute")
 
 const app = express()
 
@@ -30,5 +31,7 @@ app.use("/api/category", categoryRoute)
 app.use("/api/teacher", teacherRoute)
 // course route
 app.use("/api/course", courseRoute)
+// comment route
+app.use("/api/comment",commentRoute)
 
 module.exports = app 
