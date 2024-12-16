@@ -1,5 +1,6 @@
 const { model: courseModel } = require("./../models/Course")
 const { model: sessionModel } = require("./../models/Session")
+const { model: courseUserModel } = require("./../models/CourseUser")
 const { isValidObjectId } = require("mongoose")
 const validator = require("./../validators/course/courseCreateValid")
 const validatorSession = require("./../validators/course/courseSessionValid")
@@ -128,6 +129,35 @@ const editCourse = async (req, res) => {
     }
 }
 
+const courseUserRegister = async (req, res) => {
+    const { id } = req.params
+    const { price } = req.body
+    // check id
+    if (!isValidObjectId(id)) {
+        return res.status(409).json({ message: "id is not valid .." })
+    }
+
+    // check body
+    if (typeof price !== "number" || !price) {
+        return res.status(409).json({ message: "price is not valid .. " })
+    }
+
+    // check is user already registered in course
+
+    const isUserAlreadyExistInCourse = await courseUserModel.findOne({ user: req.user._id, course: id })
+
+    if (isUserAlreadyExistInCourse) {
+        return res.status(409).json({ message: " user already registered in course" })
+    }
+
+    // create course user register
+
+    await courseUserModel.create({ user: req.user._id, course: id, price })
+    res.status(201).json({ message: "user register in course successfully .." })
+
+
+}
+
 const addSession = async (req, res) => {
     // is valid objectId course
     const { id } = req.params
@@ -180,4 +210,4 @@ const removeSession = async (req, res) => {
 }
 
 
-module.exports = { create, getAll, editCourse, addSession, getAllSessions, removeSession }
+module.exports = { create, getAll, editCourse, courseUserRegister, addSession, getAllSessions, removeSession }

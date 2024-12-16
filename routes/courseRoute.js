@@ -15,6 +15,9 @@ router.route("/:id?")
 router.route("/:id/session")
     .post(hasToken, isAdmin, courseController.addSession)
 
+
+router.route("/:id/register")
+    .post(hasToken, courseController.courseUserRegister)
 router.route("/sessions")
     .get(hasToken, isAdmin, courseController.getAllSessions)
 
