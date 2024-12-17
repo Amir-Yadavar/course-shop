@@ -18,6 +18,10 @@ router.route("/:id/session")
 
 router.route("/:id/register")
     .post(hasToken, courseController.courseUserRegister)
+
+router.route("/category/:href")
+    .get(courseController.getCourseByCategory)
+    
 router.route("/sessions")
     .get(hasToken, isAdmin, courseController.getAllSessions)
 

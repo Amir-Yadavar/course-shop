@@ -1,6 +1,7 @@
 const { model: courseModel } = require("./../models/Course")
 const { model: sessionModel } = require("./../models/Session")
 const { model: courseUserModel } = require("./../models/CourseUser")
+const { model: categoryModel } = require("./../models/Category")
 const { isValidObjectId } = require("mongoose")
 const validator = require("./../validators/course/courseCreateValid")
 const validatorSession = require("./../validators/course/courseSessionValid")
@@ -158,6 +159,24 @@ const courseUserRegister = async (req, res) => {
 
 }
 
+const getCourseByCategory = async (req, res) => {
+    try {
+        const { href } = req.params
+
+        const findCategory = await categoryModel.findOne({ href })
+        if (findCategory) {
+            const findCourses = await courseModel.find({ categoryID: findCategory._id })
+            res.json(findCourses)
+
+        } else {
+            return res.status(404).json({ message: "category not found .." })
+        }
+    } catch (error) {
+        console.log(error);
+    }
+
+}
+
 const addSession = async (req, res) => {
     // is valid objectId course
     const { id } = req.params
@@ -210,4 +229,13 @@ const removeSession = async (req, res) => {
 }
 
 
-module.exports = { create, getAll, editCourse, courseUserRegister, addSession, getAllSessions, removeSession }
+module.exports = {
+    create,
+    getAll,
+    editCourse,
+    courseUserRegister,
+    getCourseByCategory,
+    addSession,
+    getAllSessions,
+    removeSession
+}
