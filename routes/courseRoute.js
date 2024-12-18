@@ -7,10 +7,14 @@ const uploader = require("./../utils/uploader")
 
 const router = express.Router()
 
+router.route("/:href")
+    .get(courseController.getOneCourse)
 router.route("/:id?")
+
     .post(hasToken, isAdmin, multer({ storage: uploader }).single("cover"), courseController.create)
     .get(hasToken, courseController.getAll)
     .put(hasToken, isAdmin, multer({ storage: uploader }).single("cover"), courseController.editCourse)
+
 
 router.route("/:id/session")
     .post(hasToken, isAdmin, courseController.addSession)
@@ -21,7 +25,7 @@ router.route("/:id/register")
 
 router.route("/category/:href")
     .get(courseController.getCourseByCategory)
-    
+
 router.route("/sessions")
     .get(hasToken, isAdmin, courseController.getAllSessions)
 

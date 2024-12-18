@@ -2,6 +2,7 @@ const { model: courseModel } = require("./../models/Course")
 const { model: sessionModel } = require("./../models/Session")
 const { model: courseUserModel } = require("./../models/CourseUser")
 const { model: categoryModel } = require("./../models/Category")
+const { model: commentModel } = require("./../models/Comments")
 const { isValidObjectId } = require("mongoose")
 const validator = require("./../validators/course/courseCreateValid")
 const validatorSession = require("./../validators/course/courseSessionValid")
@@ -130,6 +131,38 @@ const editCourse = async (req, res) => {
     }
 }
 
+const getOneCourse = async (req, res) => {
+    try {
+        const { href } = req.params
+
+        // is valid href
+        if (!href) {
+            return res.status(409).json({ message: "href is required .." })
+        }
+
+        // find course 
+        const findCourse = await courseModel.findOne({ href }).populate("teacher", "name").populate("categoryID", "title href")
+
+
+        if (findCourse) {
+            // find sessions 
+            const sessions = await sessionModel.find({ course: findCourse._id }).populate("course", "title")
+
+            // find comments
+            const comments = await commentModel.find({ course: findCourse._id, isAccept: true }).populate("creator", "firstName lastName").populate("course", "title")
+
+            return res.json({ findCourse, sessions, comments })
+        } else {
+            return res.status(404).json({ message: "the course not found .." })
+        }
+
+    } catch (error) {
+        console.log(error);
+    }
+
+
+}
+
 const courseUserRegister = async (req, res) => {
     const { id } = req.params
     const { price } = req.body
@@ -233,6 +266,7 @@ module.exports = {
     create,
     getAll,
     editCourse,
+    getOneCourse,
     courseUserRegister,
     getCourseByCategory,
     addSession,
