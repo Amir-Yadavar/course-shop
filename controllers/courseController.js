@@ -162,6 +162,23 @@ const getOneCourse = async (req, res) => {
 
 
 }
+const removeOne = async (req, res) => {
+    try {
+        if (!isValidObjectId(req.params.id)) {
+            return res.status(409).json({ message: "id is not valid" })
+        }
+
+        const findCourse = await courseModel.findOneAndDelete({ _id: req.params.id })
+        if (findCourse) {
+            return res.json({ message: "course delete successfully .." })
+        } else {
+            return res.status(409).json({ message: "course not found .." })
+        }
+    } catch (error) {
+        console.log(error);
+    }
+
+}
 
 const courseUserRegister = async (req, res) => {
     const { id } = req.params
@@ -267,6 +284,7 @@ module.exports = {
     getAll,
     editCourse,
     getOneCourse,
+    removeOne,
     courseUserRegister,
     getCourseByCategory,
     addSession,

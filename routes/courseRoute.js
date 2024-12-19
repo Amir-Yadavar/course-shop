@@ -11,8 +11,9 @@ router.route("/:href")
     .get(courseController.getOneCourse)
 router.route("/:id?")
 
-    .post(hasToken, isAdmin, multer({ storage: uploader }).single("cover"), courseController.create)
     .get(hasToken, courseController.getAll)
+    .delete(hasToken, isAdmin, courseController.removeOne)
+    .post(hasToken, isAdmin, multer({ storage: uploader }).single("cover"), courseController.create)
     .put(hasToken, isAdmin, multer({ storage: uploader }).single("cover"), courseController.editCourse)
 
 
