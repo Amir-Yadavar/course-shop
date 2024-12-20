@@ -151,7 +151,12 @@ const getOneCourse = async (req, res) => {
             // find comments
             const comments = await commentModel.find({ course: findCourse._id, isAccept: true }).populate("creator", "firstName lastName").populate("course", "title")
 
-            return res.json({ findCourse, sessions, comments })
+            // find related course
+
+            let relateCourse = await courseModel.find({ categoryID: findCourse.categoryID })
+            relateCourse = relateCourse.filter(course => course.href !== href)
+
+            return res.json({ findCourse, sessions, comments, relateCourse })
         } else {
             return res.status(404).json({ message: "the course not found .." })
         }

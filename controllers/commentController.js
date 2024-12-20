@@ -1,6 +1,7 @@
 const createValidator = require("./../validators/comment/createCommentValid")
 const { model: courseModel } = require("./../models/Course")
 const { model: commentModel } = require("./../models/Comments")
+const { isValidObjectId } = require("mongoose")
 
 const create = async (req, res) => {
     try {
@@ -35,4 +36,20 @@ const create = async (req, res) => {
 
 }
 
-module.exports = { create }
+const remove = async (req, res) => {
+    const { id } = req.params
+
+    if (!isValidObjectId(id)) {
+        return res.status(409).json({ message: "id not valid .." })
+    }
+
+    const findCommentAndRemove = await commentModel.findOneAndDelete({ _id: id })
+
+    if (findCommentAndRemove) {
+        return res.json({ message: "comment delete successfully .. " })
+    } else {
+        return res.status(404).json({ message: "comment not found .." })
+    }
+}
+
+module.exports = { create, remove }
