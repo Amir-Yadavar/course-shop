@@ -52,4 +52,35 @@ const remove = async (req, res) => {
     }
 }
 
-module.exports = { create, remove }
+const acceptComment = async (req, res) => {
+    const { id } = req.params
+    if (!isValidObjectId(id)) {
+        return res.status(409).json({ message: "id not valid .." })
+    }
+    const commentAccept = await commentModel.findOneAndUpdate({ _id: id }, { $set: { isAccept: true } })
+    if (commentAccept) {
+        return res.json({ message: "comment accept successfully .." })
+    } else {
+        return res.status(404).json({ message: "comment not found .." })
+    }
+
+}
+
+const rejectComment = async (req, res) => {
+    const { id } = req.params
+    if (!isValidObjectId(id)) {
+        return res.status(409).json({ message: "id not valid .." })
+    }
+console.log(id);
+    const commentReject = await commentModel.findOneAndUpdate({ _id: id }, { $set: { isAccept: false } })
+    if (commentReject) {
+        return res.json({ message: "comment reject successfully .." })
+    } else {
+        return res.status(404).json({ message: "comment not found .." })
+    }
+
+}
+
+module.exports = {
+    create, remove, acceptComment, rejectComment
+}

@@ -9,4 +9,8 @@ router.route("/:id?")
     .post(hasToken, commentController.create)
     .delete(hasToken, isAdmin, commentController.remove)
 
+router.route("/:id/accept")
+    .put(hasToken, isAdmin, commentController.acceptComment)
+router.route("/:id/reject")
+    .put(hasToken, isAdmin, commentController.rejectComment)
 module.exports = router
