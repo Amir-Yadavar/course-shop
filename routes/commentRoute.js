@@ -5,12 +5,14 @@ const isAdmin = require("./../middlewares/isAdmin")
 
 const router = express.Router()
 
-router.route("/:id?")
-    .post(hasToken, commentController.create)
-    .delete(hasToken, isAdmin, commentController.remove)
-
 router.route("/:id/accept")
     .put(hasToken, isAdmin, commentController.acceptComment)
 router.route("/:id/reject")
     .put(hasToken, isAdmin, commentController.rejectComment)
+router.route("/:id/answer")
+    .post(hasToken, isAdmin, commentController.answer)
+router.route("/:id?")
+    .delete(hasToken, isAdmin, commentController.remove)
+    .post(hasToken, commentController.create)
+
 module.exports = router

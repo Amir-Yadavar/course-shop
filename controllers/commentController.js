@@ -71,7 +71,6 @@ const rejectComment = async (req, res) => {
     if (!isValidObjectId(id)) {
         return res.status(409).json({ message: "id not valid .." })
     }
-console.log(id);
     const commentReject = await commentModel.findOneAndUpdate({ _id: id }, { $set: { isAccept: false } })
     if (commentReject) {
         return res.json({ message: "comment reject successfully .." })
@@ -80,7 +79,35 @@ console.log(id);
     }
 
 }
+const answer = async (req, res) => {
+    try {
+        const { id } = req.params
+        if (!isValidObjectId(id)) {
+            return res.status(409).json({ message: "id not valid .." })
+        }
+        const { body } = req.body
+        const findAndAcceptComment = await commentModel.findOneAndUpdate({ _id: id }, { $set: { isAccept: true } })
+
+        if (!findAndAcceptComment) {
+            return res.status(404).json({ message: "comment not found .." })
+        }
+
+        await commentModel.create({
+            body,
+            creator: req.user._id,
+            course: findAndAcceptComment._id,
+            isAnswer: true,
+            mainCommentID: id,
+            isAccept: true
+        })
+
+        return res.status(201).json({ message: "answer successfully create .." })
+    } catch (error) {
+        console.log(error);
+    }
+
+}
 
 module.exports = {
-    create, remove, acceptComment, rejectComment
+    create, remove, acceptComment, rejectComment, answer
 }
