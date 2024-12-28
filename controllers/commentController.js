@@ -95,7 +95,7 @@ const answer = async (req, res) => {
         await commentModel.create({
             body,
             creator: req.user._id,
-            course: findAndAcceptComment._id,
+            course: findAndAcceptComment.course,
             isAnswer: true,
             mainCommentID: id,
             isAccept: true

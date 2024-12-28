@@ -149,14 +149,28 @@ const getOneCourse = async (req, res) => {
             const sessions = await sessionModel.find({ course: findCourse._id }).populate("course", "title")
 
             // find comments
-            const comments = await commentModel.find({ course: findCourse._id, isAccept: true }).populate("creator", "firstName lastName").populate("course", "title")
+            const comments = await commentModel.find({ course: findCourse._id, isAccept: true }).lean().populate("creator", "firstName lastName").populate("course", "title")
+            // separate answer comment
+            let allComments = []
+
+            comments.forEach(comment => {
+                comments.forEach(answerComment => {
+                    if (String(answerComment.mainCommentID) == String(comment._id)) {
+                        allComments.push({
+                            ...comment,
+                            Answer: answerComment
+                        })
+                    }
+                })
+            })
+
 
             // find related course
 
-            let relateCourse = await courseModel.find({ categoryID: findCourse.categoryID })
+            let relateCourse = await courseModel.find({ categoryID: findCourse.categoryID }).lean()
             relateCourse = relateCourse.filter(course => course.href !== href)
 
-            return res.json({ findCourse, sessions, comments, relateCourse })
+            return res.json({ findCourse, sessions, comments:allComments, relateCourse })
         } else {
             return res.status(404).json({ message: "the course not found .." })
         }
