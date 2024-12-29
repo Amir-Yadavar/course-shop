@@ -3,6 +3,29 @@ const { model: courseModel } = require("./../models/Course")
 const { model: commentModel } = require("./../models/Comments")
 const { isValidObjectId } = require("mongoose")
 
+
+const getAll = async (req, res) => {
+    const allComment = await commentModel.find({}).populate("creator", "lastName firstName").populate("course", "title").lean()
+
+    // separate answer
+    let comments = []
+    allComment.forEach(mainComment => {
+        allComment.forEach(comment => {
+            if (String(comment.mainCommentID) == String(mainComment._id)) {
+                comments.push({
+                    ...mainComment,
+                    answer: comment
+                })
+            }
+        })
+    });
+
+
+    return res.json(comments)
+
+}
+
+
 const create = async (req, res) => {
     try {
         // check body by fastest
@@ -109,5 +132,5 @@ const answer = async (req, res) => {
 }
 
 module.exports = {
-    create, remove, acceptComment, rejectComment, answer
+    create, remove, acceptComment, rejectComment, answer, getAll
 }

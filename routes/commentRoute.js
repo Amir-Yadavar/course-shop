@@ -12,6 +12,7 @@ router.route("/:id/reject")
 router.route("/:id/answer")
     .post(hasToken, isAdmin, commentController.answer)
 router.route("/:id?")
+.get(hasToken,isAdmin,commentController.getAll)
     .delete(hasToken, isAdmin, commentController.remove)
     .post(hasToken, commentController.create)
 
