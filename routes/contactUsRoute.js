@@ -5,8 +5,9 @@ const contactUsController = require("./../controllers/contactUsController")
 
 const router = express.Router()
 
-router.route("/")
+router.route("/:id?")
     .post(contactUsController.create)
     .get(hasToken, isAdmin, contactUsController.getAll)
+    .delete(hasToken, isAdmin, contactUsController.remove)
 
 module.exports = router
