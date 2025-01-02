@@ -4,10 +4,12 @@ const isAdmin = require("./../middlewares/isAdmin")
 const contactUsController = require("./../controllers/contactUsController")
 
 const router = express.Router()
-
+router.route("/answer")
+    .post(hasToken, isAdmin, contactUsController.answer)
 router.route("/:id?")
     .post(contactUsController.create)
     .get(hasToken, isAdmin, contactUsController.getAll)
     .delete(hasToken, isAdmin, contactUsController.remove)
+
 
 module.exports = router
