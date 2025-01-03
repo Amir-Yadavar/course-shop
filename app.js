@@ -7,6 +7,7 @@ const teacherRoute = require("./routes/teacherRoute")
 const courseRoute = require("./routes/courseRoute")
 const commentRoute = require("./routes/commentRoute")
 const contactUsRoute = require("./routes/contactUsRoute")
+const newsletterRoute = require("./routes/newsletterRoute")
 
 const app = express()
 
@@ -36,5 +37,6 @@ app.use("/api/course", courseRoute)
 app.use("/api/comment",commentRoute)
 // contactUs route
 app.use("/api/contactUs",contactUsRoute)
-
+// newsletter route
+app.use("/api/newsletter",newsletterRoute) 
 module.exports = app 
