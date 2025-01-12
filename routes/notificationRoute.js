@@ -7,5 +7,6 @@ const router = express.Router()
 
 router.route("/")
     .post(hasToken , isAdmin,notificationController.create)
+    .get(hasToken , isAdmin,notificationController.getAll)
 
 module.exports = router

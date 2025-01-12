@@ -22,4 +22,13 @@ const create = async (req, res) => {
     return res.status(201).json({ message: "notification create successfully .." })
 }
 
-module.exports = { create }
+const getAll = async (req, res) => {
+    const getAllNotification = await notificationModel.find({})
+    return res.json(getAllNotification)
+}
+
+// remove
+
+// getOne
+
+module.exports = { create,getAll }
