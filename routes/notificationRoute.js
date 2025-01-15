@@ -11,5 +11,6 @@ router.route("/")
     .get(hasToken, isAdmin, notificationController.getAll)
 router.route("/:id")
     .get(hasToken, notificationController.getOne)
+    .put(hasToken, notificationController.seen)
     .delete(hasToken, isAdmin, notificationController.remove)
 module.exports = router

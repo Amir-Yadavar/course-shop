@@ -65,4 +65,22 @@ const getOne = async (req, res) => {
     }
 }
 
-module.exports = { create, getAll, getOne, remove }
+// seen
+const seen = async (req, res) => {
+    const { id } = req.params
+
+    // valid id ?
+
+    if (!isValidObjectId(id)) {
+        return res.status(409).json({ message: "id not valid .." })
+    }
+
+    const findItemUpdate = await notificationModel.findOneAndUpdate({ _id: id }, { seen: 1 })
+    if (!findItemUpdate) {
+        return res.status(404).json({ message: "notification not found .." })
+    } else {
+        return res.json({ message: "notification edited .." })
+    }
+}
+
+module.exports = { create, getAll, getOne, remove, seen }
