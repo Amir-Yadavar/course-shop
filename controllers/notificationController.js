@@ -29,6 +29,40 @@ const getAll = async (req, res) => {
 
 // remove
 
+const remove = async (req, res) => {
+    const { id } = req.params
+
+    // valid id ?
+
+    if (!isValidObjectId(id)) {
+        return res.status(409).json({ message: "id not valid .." })
+    }
+
+    const findItemRemove = await notificationModel.findOneAndDelete({ _id: id })
+    if (!findItemRemove) {
+        return res.status(404).json({ message: "notification not found .." })
+    } else {
+        return res.json({ message: "remove item success .." })
+    }
+}
+
 // getOne
 
-module.exports = { create,getAll }
+const getOne = async (req, res) => {
+    const { id } = req.params
+
+    // valid id ?
+
+    if (!isValidObjectId(id)) {
+        return res.status(409).json({ message: "id not valid .." })
+    }
+
+    const findItem = await notificationModel.findOne({ _id: id })
+    if (!findItem) {
+        return res.status(404).json({ message: "notification not found .." })
+    } else {
+        return res.json(findItem)
+    }
+}
+
+module.exports = { create, getAll, getOne, remove }
