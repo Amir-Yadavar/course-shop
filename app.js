@@ -10,6 +10,7 @@ const contactUsRoute = require("./routes/contactUsRoute")
 const newsletterRoute = require("./routes/newsletterRoute")
 const searchRoute = require("./routes/searchRoute")
 const notificationRoute = require("./routes/notificationRoute")
+const offRoute = require("./routes/offRoute")
 
 const app = express()
 
@@ -45,4 +46,6 @@ app.use("/api/newsletter", newsletterRoute)
 app.use("/api/search", searchRoute)
 // notification route
 app.use("/api/notification", notificationRoute)
+// off route
+app.use("/api/off", offRoute)
 module.exports = app 
