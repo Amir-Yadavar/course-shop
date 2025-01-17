@@ -11,6 +11,7 @@ const newsletterRoute = require("./routes/newsletterRoute")
 const searchRoute = require("./routes/searchRoute")
 const notificationRoute = require("./routes/notificationRoute")
 const offRoute = require("./routes/offRoute")
+const orderRoute = require("./routes/order")
 
 const app = express()
 
@@ -48,4 +49,8 @@ app.use("/api/search", searchRoute)
 app.use("/api/notification", notificationRoute)
 // off route
 app.use("/api/off", offRoute)
+// order route
+app.use("/api/order", orderRoute)
+
+
 module.exports = app 
