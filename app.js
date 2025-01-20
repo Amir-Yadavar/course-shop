@@ -13,6 +13,7 @@ const notificationRoute = require("./routes/notificationRoute")
 const offRoute = require("./routes/offRoute")
 const orderRoute = require("./routes/order")
 const departmentRoute = require("./routes/departmentRoute")
+const subDepartmentRoute = require("./routes/subDepartmentRoute")
 
 const app = express()
 
@@ -53,6 +54,8 @@ app.use("/api/off", offRoute)
 // order route
 app.use("/api/order", orderRoute)
 // department route
-app.use("/api/department",departmentRoute)
+app.use("/api/department", departmentRoute)
+// sub department route
+app.use("/api/subDepartment", subDepartmentRoute)
 
 module.exports = app 
