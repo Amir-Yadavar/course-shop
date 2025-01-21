@@ -71,12 +71,12 @@ const edit = async (req, res) => {
         return res.status(404).json({ message: "the department not found" })
     }
 
-    const findSubDepartment = await subDepartmentModel.findOneAndUpdate({ _id: id },{title , department})
+    const findSubDepartment = await subDepartmentModel.findOneAndUpdate({ _id: id }, { title, department })
     if (!findSubDepartment) {
         return res.status(404).json({ message: "subDepartment not found .." })
     }
 
     return res.json({ message: "update item successfully .." })
- }
+}
 
 module.exports = { getAll, create, remove, edit }
