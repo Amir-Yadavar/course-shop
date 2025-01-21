@@ -9,6 +9,8 @@ router.route("/")
     .get(subDepartmentController.getAll)
     .post(hasToken, isAdmin, subDepartmentController.create)
 
-
+router.route("/:id")
+    .delete(hasToken, isAdmin, subDepartmentController.remove)
+    .put(hasToken, isAdmin, subDepartmentController.edit)
 
 module.exports = router
