@@ -14,6 +14,7 @@ const offRoute = require("./routes/offRoute")
 const orderRoute = require("./routes/order")
 const departmentRoute = require("./routes/departmentRoute")
 const subDepartmentRoute = require("./routes/subDepartmentRoute")
+const ticketRoute = require("./routes/ticketRoute")
 
 const app = express()
 
@@ -57,5 +58,7 @@ app.use("/api/order", orderRoute)
 app.use("/api/department", departmentRoute)
 // sub department route
 app.use("/api/subDepartment", subDepartmentRoute)
+// ticket route
+app.use("/api/ticket", ticketRoute)
 
 module.exports = app 
