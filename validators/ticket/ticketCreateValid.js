@@ -6,7 +6,7 @@ const schema = {
     department:{type:"string",min:15},
     subDepartment:{type:"string",min:15},
     title:{type:"string",min:4},
-    body:{type:"string",min:10},
+    body:{type:"string",min:10}
 }
 
 

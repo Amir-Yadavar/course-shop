@@ -19,17 +19,21 @@ const schema = mongoose.Schema({
         type: String,
         required: true
     },
-    image:{
-        type:String,
+    image: {
+        type: String,
     },
-    creator:{
-        type:mongoose.Types.ObjectId,
-        ref:"User",
-        required:true
+    creator: {
+        type: mongoose.Types.ObjectId,
+        ref: "User",
+        required: true
     },
-    answer:{
-        type:Number,
-        default:0
+    mainTicket: {
+        type: mongoose.Types.ObjectId,
+        ref: "Ticket"
+    },
+    isAnswer: {
+        type: Number,
+        required: true,
     }
 }, { timestamps: true })
 

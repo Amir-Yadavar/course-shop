@@ -11,4 +11,10 @@ router.route("/")
     .post(hasToken, multer({ storage: uploaderTicket }).single("image"), ticketController.create)
     .get(hasToken, isAdmin, ticketController.getAll)
 
+
+router.route("/:id")
+    .delete(hasToken, isAdmin, ticketController.remove)
+
+    router.route("/answer")
+    .post(hasToken,ticketController.answer)
 module.exports = router
