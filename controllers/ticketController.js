@@ -32,9 +32,9 @@ const create = async (req, res) => {
             subDepartment,
             title,
             body,
-            isAnswer:0,
+            isAnswer: 0,
             creator: req.user._id,
-            image: req.file.filename
+            image: req.file && req.file.filename
         })
 
         return res.status(201).json({ message: "ticket create successfully .." })
@@ -77,7 +77,7 @@ const remove = async (req, res) => {
     }
 }
 
-const answer = async (req,res)=>{
+const answer = async (req, res) => {
     try {
         const resultValid = validator(req.body)
 
@@ -109,9 +109,9 @@ const answer = async (req,res)=>{
             title,
             body,
             mainTicket,
-            isAnswer:1,
+            isAnswer: 1,
             creator: req.user._id,
-            image:req.file && req.file.filename
+            image: req.file && req.file.filename
         })
 
         return res.status(201).json({ message: "ticket answer create successfully .." })
@@ -121,4 +121,29 @@ const answer = async (req,res)=>{
     }
 }
 
-module.exports = { create, getAll, remove ,answer}
+const getAnswer = async (req, res) => {
+    const allTicket = await ticketModel.find({},"-createdAt -updatedAt -__v").lean()
+    .populate("department", "-createdAt -updatedAt -__v")
+    .populate("subDepartment", "-createdAt -updatedAt -__v -department")
+    .populate("creator", "firstName lastName")
+    
+       
+        
+    let tickets = []
+    allTicket.forEach(item => {
+        allTicket.forEach(answer => {
+            if (String(answer.mainTicket) == String(item._id)) {
+                tickets.push({
+                    ...item,
+                    replay: answer
+                })
+            }
+
+        })
+
+    })
+    tickets = tickets.filter(item => String(item.creator._id) == String(req.user._id))
+    return res.json(tickets)
+}
+
+module.exports = { create, getAll, remove, answer, getAnswer }

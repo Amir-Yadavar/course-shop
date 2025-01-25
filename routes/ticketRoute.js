@@ -9,12 +9,13 @@ const router = express.Router()
 
 router.route("/")
     .post(hasToken, multer({ storage: uploaderTicket }).single("image"), ticketController.create)
+    .get(hasToken, ticketController.getAnswer)
     .get(hasToken, isAdmin, ticketController.getAll)
 
 
 router.route("/:id")
     .delete(hasToken, isAdmin, ticketController.remove)
 
-    router.route("/answer")
-    .post(hasToken,ticketController.answer)
+router.route("/answer")
+    .post(hasToken, ticketController.answer)
 module.exports = router
